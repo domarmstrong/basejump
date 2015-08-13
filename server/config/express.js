@@ -36,7 +36,6 @@ module.exports = function(app) {
   }
 
   if ('development' === env || 'test' === env) {
-    app.use(require('connect-livereload')({ src: '/livereload.js?snipver=1' }));
     app.use(express.static(path.join(config.root, '.tmp')));
     app.use(express.static(path.join(config.root, 'client')));
     app.set('appPath', path.join(config.root, 'client'));
