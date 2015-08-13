@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('workspaceApp')
+angular.module('basejumpApp')
   .controller('MainCtrl', function ($scope, $http) {
     $scope.awesomeThings = [];
 

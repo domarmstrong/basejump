@@ -5,7 +5,7 @@
 module.exports = {
   // MongoDB connection options
   mongo: {
-    uri: 'mongodb://localhost/workspace-dev'
+    uri: 'mongodb://localhost/basejump-dev'
   },
 
   seedDB: true

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('workspaceApp', [
+angular.module('basejumpApp', [
   'ngCookies',
   'ngResource',
   'ngSanitize',

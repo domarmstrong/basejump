@@ -306,7 +306,7 @@ module.exports = function (grunt) {
     ngtemplates: {
       options: {
         // This should be the name of your apps angular module
-        module: 'workspaceApp',
+        module: 'basejumpApp',
         htmlmin: {
           collapseBooleanAttributes: true,
           collapseWhitespace: true,
