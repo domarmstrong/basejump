@@ -1,42 +1,42 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-<header class="hero-unit" id="banner">
-  <div class="container">
-    <h1>VotePlex</h1>
-    <p class="lead">Create custom polls with live results.</p>
-    <button class="btn btn-success btn-lg">Sign Up</button>
+<div ng-controller="MainCtrl">
+  <div ng-hide="isLoggedIn()">
+    <hero-unit>
+      <h1>VotePlex</h1>
+      <p class="lead">Create custom polls with live results.</p>
+      <button class="sign-up btn btn-success btn-lg">Sign Up</button>
+    </hero-unit>
+    
+    <div class="container app-features">
+      <div class="row">
+        <app-feature class="feature-live" icon="fa-refresh" title="Live Results">
+          Live graphs show your poll results immediately in easy to an easy to understand format. 
+          One graph will not provide the whole picture, that's why we provide multiple graph types 
+          to better describe your results.
+        </app-feature>
+        <app-feature class="feature-works" icon="fa-globe" title="Works Everywhere">
+          Traditional desktop computers now represent only 30% of Internet traffic. Your poll 
+          must work on the tablets, smart phones, netbooks and notebooks that your visitors are using. 
+          Our responsive designs do just that.
+        </app-feature>
+        <app-feature class="feature-social" icon="fa-group" title="Social Integration">
+          Free integrated facebook or traditional comments allow your poll voters to provide 
+          immediate feedback and discuss results. Social share buttons encourage your poll 
+          voters to help spread the word.
+        </app-feature>
+      </div>
+    </div>
+    
+    <app-footer></app-footer>
   </div>
-</header>
-
-<div class="container app-features">
-  <div class="row">
-    <div class="feature feature-live col-md-4 col-lg-4 col-sm-6">
-      <i class="fa fa-refresh" />
-      <h2>Live Results</h2>
-      <p>Live graphs show your poll results immediately in easy to an easy to understand format. 
-      One graph will not provide the whole picture, that's why we provide multiple graph types 
-      to better describe your results.</p>
-    </div>
-    <div class="feature feature-works col-md-4 col-lg-4 col-sm-6">
-      <i class="fa fa-globe" />
-      <h2>Works Everywhere</h2>
-      <p>Traditional desktop computers now represent only 30% of Internet traffic. Your poll 
-      must work on the tablets, smart phones, netbooks and notebooks that your visitors are using. 
-      Our responsive designs do just that.</p>
-    </div>
-    <div class="feature feature-social col-md-4 col-lg-4 col-sm-6">
-      <i class="fa fa-group" />
-      <h2>Social Integration</h2>
-      <p>Free integrated facebook or traditional comments allow your poll voters to provide 
-      immediate feedback and discuss results. Social share buttons encourage your poll 
-      voters to help spread the word.</p>
-    </div>
+  
+  <div ng-show="isLoggedIn()">
+    <hero-unit>
+      <h1>Dashboard</h1>
+      <p class="lead">What would you like to do today?</p>
+      <button class="btn btn-success btn-lg">New Poll</button>
+      <button class="btn btn-primary btn-lg">My Polls</button>
+    </hero-unit>
   </div>
 </div>
-
-<footer class="footer">
-  <div class="container">
-      <p>Dom Armstrong |
-       <a href="https://github.com/domarmstrong">@github</a></p>
-  </div>
-</footer>
