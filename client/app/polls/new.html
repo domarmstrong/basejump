@@ -1,0 +1,43 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+
+<div>
+  <hero-unit>
+    <h1>New Poll</h1>
+    <p class="lead">What would you like to find out?</p>
+  </hero-unit>
+  
+  <div class="container" ng-controller="NewPollCtrl">
+      <form class="form new-poll-form" name="form" ng-submit="submit(form)" novalidate>
+
+        <div class="form-group" ng-class="{ 'has-success': form.name.$valid && submitted, 'has-error': form.name.$invalid && submitted }">
+          <label>Name your poll</label>
+
+          <input type="text" name="name" placeholder="What is your favorite band?" class="form-control" ng-model="poll.name" required/>
+          <p class="help-block" ng-show="form.name.$error.required && submitted">
+            A poll name is required
+          </p>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-success': form.email.$valid && submitted, 'has-error': form.email.$invalid && submitted }">
+          <label>Options</label>
+
+          <div ng-repeat="option in poll.options" ng-class="{ 'poll-option': true, 'has-success': form['option.' + $index].$valid && submitted, 'has-error': form['option.' + $index].$invalid && submitted }">
+            <input type="text" placeholder="{{option.placeholder}}" name="{{'option.'+$index}}" class="form-control" ng-model="option.value" mongoose-error ng-required="{{option.required}}" />
+            <p class="help-block" ng-show="submitted && form['option.'+$index].$error.required">
+              At least 2 options must be provided
+            </p>
+            <p class="help-block" ng-show="form['option.'+$index].$error.mongoose">
+              {{ errors.options[$index] }}
+            </p>
+          </div>
+        </div>
+
+        <div class="container-fluid">
+          <div class="row">
+            <button class="btn btn-lg btn-default" ng-click="addOption($event)">Add another option</button>
+            <button class="btn btn-success btn-lg pull-right" type="submit" ng-disabled="poll.$invalid">Create</button>
+          </div>
+        </div>
+      </form>
+  </div>
+</div>

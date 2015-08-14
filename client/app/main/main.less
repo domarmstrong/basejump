@@ -13,45 +13,35 @@
     letter-spacing: -1px;
 }
 
-.hero-unit {
-    position: relative;
-    padding: 30px 15px;
-    color: #F5F5F5;
-    text-align: center;
-    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
-    background: #4393B9;
-    .btn {
-        margin-left: 5px;
-        margin-right: 5px;
-    }
-    .btn.sign-up {
-        width: 200px;
-    }
+hero-unit .btn.sign-up {
+    width: 200px;
 }
 
-.app-features {
+app-feature {
     .feature {
-        margin-top: 40px;
+        margin-bottom: 40px;
         i {
             font-size: 60px;
         }
         text-align: center;
     }
-    .feature-live i {
+    &.feature-live i {
         color: @brand-warning;
     }
-    .feature-works i {
+    &.feature-works i {
         color: @brand-success;
     }
-    .feature-social i {
+    &.feature-social i {
         color: @brand-primary;
     }
+}
+.app-features {
+    margin-bottom: 30px;
 }
 
 .footer {
     text-align: center;
     padding: 30px 0;
-    margin-top: 70px;
     border-top: 1px solid #E5E5E5;
 }
 
