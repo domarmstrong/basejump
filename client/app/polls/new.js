@@ -9,7 +9,7 @@ angular.module('basejumpApp')
       });
   })
   
-  .controller('NewPollCtrl', function ($scope, $location, Auth, bands, polls) {
+  .controller('NewPollCtrl', function ($scope, $location, Auth, Bands, Polls) {
     var poll = {
       name: null,
       options: [],
@@ -18,15 +18,14 @@ angular.module('basejumpApp')
     $scope.errors = {};
 
     // Get 2 bands for the initial options
-    bands(2).then(bands => {
-      console.log(bands);
+    Bands(2).then(bands => {
       poll.options = bands.map(mapToOption);
     });
     
     $scope.addOption = event => {
       event.preventDefault();
       // Get an extra random band for each new option added
-      bands(1).then(bands => {
+      Bands(1).then(bands => {
         poll.options = poll.options.concat( bands.map(mapToOption) );
       });
     };
@@ -59,7 +58,7 @@ angular.module('basejumpApp')
           name: poll.name,
           options: poll.options.map(option => option.value),
         };
-        polls.create(data).then(url => $location.path(url)).catch(err => {
+        Polls.create(data).then(url => $location.path(url)).catch(err => {
           $scope.errors.onSave = err;
         });
       }

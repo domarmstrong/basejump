@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('basejumpApp')
-  .factory('polls', ['$http', function ($http) {
+  .factory('Polls', ['$http', function ($http) {
     return {
       create (data) {
         return $http.post('/api/polls/create', data).then(res => res.data);
