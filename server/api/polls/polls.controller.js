@@ -1,12 +1,3 @@
-/**
- * Using Rails-like standard naming convention for endpoints.
- * GET     /things              ->  index
- * POST    /things              ->  create
- * GET     /things/:id          ->  show
- * PUT     /things/:id          ->  update
- * DELETE  /things/:id          ->  destroy
- */
-
 'use strict';
 
 var _ = require('lodash');
@@ -15,29 +6,10 @@ var slug = require('slug');
 var path = require("path");
 
 // Get list of things
-exports.index = function(req, res) {
-  Poll.find(function (err, things) {
+exports.find = function(req, res) {
+  Poll.find(req.query).where('deleted').exists(false).exec(function (err, things) {
     if(err) { return handleError(res, err); }
     return res.status(200).json(things);
-  });
-};
-
-// Get all polls for a user
-exports.getByUserId = function(req, res) {
-  Poll.find({ userId: req.params.id, deleted: { $exists: false }}, function (err, poll) {
-    if(err) { return handleError(res, err); }
-    if(!poll) { return res.status(404).send('Not Found'); }
-    console.log(poll);
-    return res.json(poll);
-  });
-};
-
-// Get a single poll
-exports.getById = function(req, res) {
-  Poll.findById(req.params.id, function (err, poll) {
-    if(err) { return handleError(res, err); }
-    if(!poll) { return res.status(404).send('Not Found'); }
-    return res.json(poll);
   });
 };
 
@@ -63,6 +35,9 @@ exports.update = function(req, res) {
   Poll.findById(req.params.id, function (err, poll) {
     if (err) { return handleError(res, err); }
     if(!poll) { return res.status(404).send('Not Found'); }
+    if (! poll.userId.equals(req.user._id)) {
+      return res.status(403).send('Users may only update thier own polls');
+    }
     var updated = _.merge(poll, req.body);
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
@@ -76,6 +51,9 @@ exports.destroy = function(req, res) {
   Poll.findById(req.params.id, function (err, poll) {
     if(err) { return handleError(res, err); }
     if(!poll) { return res.status(404).send('Not Found'); }
+    if (! poll.userId.equals(req.user._id)) {
+      return res.status(403).send('Users may only delete thier own polls');
+    }
     poll.remove(function(err) {
       if(err) { return handleError(res, err); }
       return res.status(204).send('No Content');

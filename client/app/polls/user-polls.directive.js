@@ -2,17 +2,24 @@
 
 angular.module('basejumpApp')
   .controller('UserPollsCtrl', ['$scope', 'polls', 'Auth', function ($scope, polls, Auth) {
-    $scope.polls = null; // []
+    $scope.polls = null; // array after data is fetched
+    getPolls();
     
-    Auth.getCurrentUser().$promise.then(user => {
-      // get all polls for current user
-      return polls.getPollsForUser(user._id).then(polls => $scope.polls = polls);
-    })
+    function getPolls() {
+      Auth.getCurrentUser().$promise.then(user => {
+        // get all polls for current user
+        return polls.getPollsForUser(user._id).then(polls => $scope.polls = polls);
+      })
+    }
     
     $scope.getVotes = function (id) {
       let poll = $scope.polls.find(poll => poll._id === id);
       return poll.options.reduce((votes, option) => votes + option.votes.length, 0);
     };
+    
+    $scope.deletePoll = function (id) {
+      polls.deletePoll(id).then(getPolls);
+    }
   }])
   
   .directive('userPolls', function () {
@@ -29,7 +36,7 @@ angular.module('basejumpApp')
               <div class="buttons pull-right">
                 <button class="btn btn-primary"><i class="fa fa-eye"></i></button>
                 <button class="btn btn-success"><i class="fa fa-share-alt"></i></button>
-                <button class="btn btn-danger"><i class="fa fa-remove"></i></button>
+                <button class="btn btn-danger" ng-click="deletePoll(poll._id)"><i class="fa fa-remove"></i></button>
               </div>
             </div>
           </div>
