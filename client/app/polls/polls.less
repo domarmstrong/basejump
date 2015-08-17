@@ -3,7 +3,21 @@
   margin: auto;
   
   .poll-option {
+    position: relative;
     margin-bottom: 5px;
+  }
+  
+  .remove-option {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    padding: 5px;
+    opacity: 1;
+    transition: opacity 0.3s;
+    &.ng-hide {
+      display: block!important;
+      opacity: 0;
+    }
   }
   
   button {

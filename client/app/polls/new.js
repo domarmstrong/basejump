@@ -9,7 +9,7 @@ angular.module('basejumpApp')
       });
   })
   
-  .controller('NewPollCtrl', function ($scope, Auth, bands, $location) {
+  .controller('NewPollCtrl', function ($scope, $location, Auth, bands, polls) {
     var poll = {
       name: null,
       options: [],
@@ -17,50 +17,58 @@ angular.module('basejumpApp')
     $scope.poll = poll;
     $scope.errors = {};
 
+    // Get 2 bands for the initial options
     bands(2).then(bands => {
-      poll.options = bands.map(mapToOption(true));
+      console.log(bands);
+      poll.options = bands.map(mapToOption);
     });
     
     $scope.addOption = event => {
       event.preventDefault();
+      // Get an extra random band for each new option added
       bands(1).then(bands => {
-        poll.options = poll.options.concat( bands.map(mapToOption(false)) );
+        poll.options = poll.options.concat( bands.map(mapToOption) );
       });
     };
     
+    $scope.optionIsRequired = function(index) {
+      let values = poll.options.reduce((values, option) => {
+        return option.value ? values.concat(option.value) : values;
+      }, []);
+      let numberRequired = 2 - values.length;
+      let required = poll.options.reduce((required, option, i) => {
+        if (numberRequired > 0 && !option.value) {
+          required.push(i);
+          numberRequired--;
+        }
+        return required;
+      }, []);
+      return required.indexOf(index) !== -1;
+    }
+    
+    $scope.removeOption = function(index) {
+      poll.options.splice(index, 1);
+    }
+    
     $scope.submit = function(form) {
       $scope.submitted = true;
+      console.log(form);
 
-      if(form.$valid) {
-        Auth.createUser({
-          name: $scope.user.name,
-          email: $scope.user.email,
-          password: $scope.user.password
-        })
-        .then( function() {
-          // Account created, redirect to home
-          $location.path('/');
-        })
-        .catch( function(err) {
-          err = err.data;
-          $scope.errors = {};
-
-          // Update validity of form fields that match the mongoose errors
-          angular.forEach(err.errors, function(error, field) {
-            form[field].$setValidity('mongoose', false);
-            $scope.errors[field] = error.message;
-          });
+      if (form.$valid) {
+        let data = {
+          name: poll.name,
+          options: poll.options.map(option => option.value),
+        };
+        polls.create(data).then(url => $location.path(url)).catch(err => {
+          $scope.errors.onSave = err;
         });
       }
     };
   });
 
-function mapToOption(required) {
-  return function (placeholder) {
-    return {
-      placeholder,
-      value: null,
-      required: required || false,
-    };
+function mapToOption(placeholder) {
+  return {
+    placeholder,
+    value: null,
   };
 }

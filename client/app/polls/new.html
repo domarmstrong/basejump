@@ -22,15 +22,22 @@
           <label>Options</label>
 
           <div ng-repeat="option in poll.options" ng-class="{ 'poll-option': true, 'has-success': form['option.' + $index].$valid && submitted, 'has-error': form['option.' + $index].$invalid && submitted }">
-            <input type="text" placeholder="{{option.placeholder}}" name="{{'option.'+$index}}" class="form-control" ng-model="option.value" mongoose-error ng-required="{{option.required}}" />
-            <p class="help-block" ng-show="submitted && form['option.'+$index].$error.required">
-              At least 2 options must be provided
-            </p>
+            <input
+              type="text"
+              placeholder="{{option.placeholder}}"
+              name="{{'option.'+$index}}"
+              class="form-control"
+              ng-model="option.value"
+              required mongoose-error />
+              
+            <i ng-show="poll.options.length > 2" class="remove-option fa fa-remove" ng-click="poll.options.length > 2 && removeOption($index)"></i>
             <p class="help-block" ng-show="form['option.'+$index].$error.mongoose">
               {{ errors.options[$index] }}
             </p>
           </div>
         </div>
+        
+        <div ng-show="errors.onSave" class="alert alert-danger">{{errors.onSave}}</div>
 
         <div class="container-fluid">
           <div class="row">

@@ -10,11 +10,13 @@
 'use strict';
 
 var _ = require('lodash');
-//var Thing = require('./thing.model');
+var Poll = require('./polls.model');
+var slug = require('slug');
+var path = require("path");
 
 // Get list of things
 exports.index = function(req, res) {
-  Thing.find(function (err, things) {
+  Poll.find(function (err, things) {
     if(err) { return handleError(res, err); }
     return res.status(200).json(things);
   });
@@ -22,55 +24,59 @@ exports.index = function(req, res) {
 
 // Get all polls for a user
 exports.getByUserId = function(req, res) {
-  return res.json([
-    { _id: 1, userId: req.params.id, title: 'foo' },
-    { _id: 2, userId: req.params.id, title: 'bar' },
-  ]);
-  return;
-  Thing.findById(req.params.id, function (err, thing) {
+  Poll.find({ userId: req.params.id, deleted: { $exists: false }}, function (err, poll) {
     if(err) { return handleError(res, err); }
-    if(!thing) { return res.status(404).send('Not Found'); }
-    return res.json(thing);
+    if(!poll) { return res.status(404).send('Not Found'); }
+    console.log(poll);
+    return res.json(poll);
   });
 };
 
 // Get a single poll
 exports.getById = function(req, res) {
-  Thing.findById(req.params.id, function (err, thing) {
+  Poll.findById(req.params.id, function (err, poll) {
     if(err) { return handleError(res, err); }
-    if(!thing) { return res.status(404).send('Not Found'); }
-    return res.json(thing);
+    if(!poll) { return res.status(404).send('Not Found'); }
+    return res.json(poll);
   });
 };
 
-// Creates a new thing in the DB.
+// Creates a new poll in the DB.
 exports.create = function(req, res) {
-  Thing.create(req.body, function(err, thing) {
+  var poll = req.body;
+  poll.userId = req.user._id;
+  poll.options = poll.options.map(function (option) {
+    return { value: option, votes: [] };
+  });
+  // Urls should not change after creation
+  poll.url = path.join(slug(req.user.name), slug(poll.name)).toLowerCase();
+  
+  Poll.create(req.body, function(err, poll) {
     if(err) { return handleError(res, err); }
-    return res.status(201).json(thing);
+    return res.status(201).json(poll);
   });
 };
 
-// Updates an existing thing in the DB.
+// Updates an existing poll in the DB.
 exports.update = function(req, res) {
   if(req.body._id) { delete req.body._id; }
-  Thing.findById(req.params.id, function (err, thing) {
+  Poll.findById(req.params.id, function (err, poll) {
     if (err) { return handleError(res, err); }
-    if(!thing) { return res.status(404).send('Not Found'); }
-    var updated = _.merge(thing, req.body);
+    if(!poll) { return res.status(404).send('Not Found'); }
+    var updated = _.merge(poll, req.body);
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
-      return res.status(200).json(thing);
+      return res.status(200).json(poll);
     });
   });
 };
 
-// Deletes a thing from the DB.
+// Deletes a poll from the DB.
 exports.destroy = function(req, res) {
-  Thing.findById(req.params.id, function (err, thing) {
+  Poll.findById(req.params.id, function (err, poll) {
     if(err) { return handleError(res, err); }
-    if(!thing) { return res.status(404).send('Not Found'); }
-    thing.remove(function(err) {
+    if(!poll) { return res.status(404).send('Not Found'); }
+    poll.remove(function(err) {
       if(err) { return handleError(res, err); }
       return res.status(204).send('No Content');
     });

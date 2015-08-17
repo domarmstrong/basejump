@@ -1,12 +1,30 @@
 'use strict';
 
 var mongoose = require('mongoose'),
+    User = require('../user/user.model'),
     Schema = mongoose.Schema;
 
-var ThingSchema = new Schema({
+var userId = { type: Schema.Types.ObjectId, ref: 'User' };
+var PollSchema = new Schema({
+  userId: userId,
   name: String,
-  info: String,
-  active: Boolean
+  url: { type: String, unique: true },
+  options: [{ value: String, votes: [userId] }],
+  created: Date,
+  updated: Date,
+  deleted: Date,
 });
 
-module.exports = mongoose.model('Thing', ThingSchema);
+PollSchema.pre('save', function (next) {
+  updateTimestamps(this);
+  next();
+});
+
+function updateTimestamps(poll) {
+  var now = new Date();
+  console.log(poll);
+  if ( !poll.created ) poll.created = now;
+  poll.updated = now;
+}
+
+module.exports = mongoose.model('Poll', PollSchema);
