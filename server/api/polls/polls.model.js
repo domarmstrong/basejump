@@ -22,7 +22,6 @@ PollSchema.pre('save', function (next) {
 
 function updateTimestamps(poll) {
   var now = new Date();
-  console.log(poll);
   if ( !poll.created ) poll.created = now;
   poll.updated = now;
 }
