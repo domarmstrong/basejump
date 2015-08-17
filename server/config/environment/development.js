@@ -8,5 +8,5 @@ module.exports = {
     uri: 'mongodb://localhost/basejump-dev'
   },
 
-  seedDB: true
+  seedDB: false
 };
