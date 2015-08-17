@@ -59,6 +59,7 @@ angular.module('basejumpApp')
           
           <div ng-show="polls && polls.length" ng-repeat="poll in polls" class="panel panel-default">
             <div class="panel-body">
+              <span class="date label label-info">Created: {{ poll.created | date : 'dd/MM/yy'}}</span>
               <span class="vote-count label label-primary">Votes: {{ getVotes(poll._id) }}</span>
               <span>{{ poll.name }}</span>
               <div class="buttons pull-right">
