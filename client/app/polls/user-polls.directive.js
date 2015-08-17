@@ -12,10 +12,38 @@ angular.module('basejumpApp')
       })
     }
     
+    function findPoll(id) {
+      return $scope.polls.find(poll => poll._id === id);
+    }
+    
     $scope.getVotes = function (id) {
-      let poll = $scope.polls.find(poll => poll._id === id);
-      return poll.options.reduce((votes, option) => votes + option.votes.length, 0);
+      return findPoll(id).options.reduce((votes, option) => votes + option.votes.length, 0);
     };
+    
+    $scope.getPollUrl = function (id) {
+      return `${window.location.origin}/${findPoll(id).url}`;
+    }
+    
+    let popoverOpen = false;
+    $scope.showUrlPopover = function (event, id) {
+      if (popoverOpen) return;
+      
+      let button = $(event.delegateTarget);
+      event.stopPropagation();
+      button.popover('show');
+      popoverOpen = true;
+      
+      let win = $(window);
+      let eventName = `mousedown.popover`;
+      win.on(eventName, e => {
+        if ($(e.target).closest('.popover').length) {
+          return;
+        }
+        popoverOpen = false;
+        button.popover('hide');
+        win.off(eventName);
+      });
+    }
     
     $scope.deletePoll = function (id) {
       polls.deletePoll(id).then(getPolls);
@@ -35,7 +63,13 @@ angular.module('basejumpApp')
               <span>{{ poll.name }}</span>
               <div class="buttons pull-right">
                 <button class="btn btn-primary"><i class="fa fa-eye"></i></button>
-                <button class="btn btn-success"><i class="fa fa-share-alt"></i></button>
+                <button class="btn btn-success share-button"
+                  data-placement="left"
+                  data-content="{{getPollUrl(poll._id)}}"
+                  data-trigget="manual"
+                  ng-click="showUrlPopover($event, poll._id)">
+                    <i class="fa fa-share-alt"></i>
+                </button>
                 <button class="btn btn-danger" ng-click="deletePoll(poll._id)"><i class="fa fa-remove"></i></button>
               </div>
             </div>
