@@ -9,7 +9,8 @@ angular.module('basejumpApp')
           height: 500,
           width: '100%',
           display: 'block',
-        })
+        });
+
         var data = {
             labels: ["January"],
             datasets: [

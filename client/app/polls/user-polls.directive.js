@@ -1,12 +1,16 @@
 'use strict';
 
 angular.module('basejumpApp')
-  .controller('UserPollsCtrl', ['$scope', 'Polls', 'Auth', function ($scope, Polls, Auth) {
+  .controller('UserPollsCtrl', ['$scope', '$location', 'Polls', 'Auth', function ($scope, $location, Polls, Auth) {
     $scope.polls = null; // array after data is fetched
     getPolls();
     
     function getPolls() {
-      Auth.getCurrentUser().$promise.then(user => {
+      let user = Auth.getCurrentUser();
+      if (!user.$promise) {
+        return;
+      }
+      user.$promise.then(user => {
         // get all polls for current user
         return Polls.getPollsForUser(user._id).then(polls => $scope.polls = polls);
       })
@@ -22,7 +26,7 @@ angular.module('basejumpApp')
     
     $scope.getPollUrl = function (id) {
       return `${window.location.origin}/${findPoll(id).url}`;
-    }
+    };
     
     let popoverOpen = false;
     $scope.showUrlPopover = function (event, id) {
@@ -43,7 +47,7 @@ angular.module('basejumpApp')
         button.popover('hide');
         win.off(eventName);
       });
-    }
+    };
     
     $scope.deletePoll = function (id) {
       Polls.deletePoll(id).then(getPolls);
@@ -63,7 +67,7 @@ angular.module('basejumpApp')
               <span class="vote-count label label-primary">Votes: {{ getVotes(poll._id) }}</span>
               <span>{{ poll.name }}</span>
               <div class="buttons pull-right">
-                <a href="{{poll.url}}" class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                <a href="{{ poll.url }}" class="btn btn-primary"><i class="fa fa-eye"></i></a>
                 <button class="btn btn-success share-button"
                   data-placement="left"
                   data-content="{{getPollUrl(poll._id)}}"

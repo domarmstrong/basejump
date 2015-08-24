@@ -8,7 +8,6 @@ angular.module('basejumpApp')
     }
 
     return {
-
       /**
        * Authenticate user and save token
        *
@@ -41,8 +40,6 @@ angular.module('basejumpApp')
 
       /**
        * Delete access token and user info
-       *
-       * @param  {Function}
        */
       logout: function() {
         $cookieStore.remove('token');
