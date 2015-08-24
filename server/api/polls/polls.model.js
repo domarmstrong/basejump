@@ -9,7 +9,14 @@ var PollSchema = new Schema({
   userId: userId,
   name: String,
   url: { type: String, unique: true },
-  options: [{ value: String, votes: [userId] }],
+  options: [{
+    value: String,
+    votes: [{
+      userId: userId,
+      datetime: Date
+      
+    }],
+  }],
   created: Date,
   updated: Date,
   deleted: Date,

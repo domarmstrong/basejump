@@ -1,0 +1,34 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+
+<div>
+  <hero-unit>
+    <h1>{{poll.name}}?</h1>
+    <p>By - {{poll.userName}}</p>
+  </hero-unit>
+ 
+  <div class="container">
+    <form ng-show="poll && !hasVoted" class="form poll-form" name="form" ng-submit="submit(form)" novalidate>
+      <div class="form-group" ng-class="{ 'has-success': form.option.$valid && form.$submitted, 'has-error': form.option.$invalid && form.$submitted }">
+        <ul>
+          <li ng-repeat="option in poll.options">
+           <label>
+             <input type="radio" name="option" value="{{option._id}}" ng-model="$parent.selectedId" required />
+             {{option.value}}
+           </label>
+          </li>
+        </ul>
+        <p class="help-block" ng-show="form.option.$error.required && form.$submitted">
+          Please select your answer
+        </p>
+      </div>
+
+      <div ng-show="errors.onSave" class="alert alert-danger">{{errors.onSave}}</div>
+
+      <button class="btn btn-success btn-lg pull-right" type="submit" ng-disabled="form.$invalid">Submit</button>
+    </form>
+    
+    <div ng-show="hasVoted">
+      <line-chart data-chart="{{getChartData()}}"></line-chart>
+    </div>
+  </div>
+</div>

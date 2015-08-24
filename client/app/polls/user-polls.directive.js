@@ -1,14 +1,14 @@
 'use strict';
 
 angular.module('basejumpApp')
-  .controller('UserPollsCtrl', ['$scope', 'polls', 'Auth', function ($scope, polls, Auth) {
+  .controller('UserPollsCtrl', ['$scope', 'Polls', 'Auth', function ($scope, Polls, Auth) {
     $scope.polls = null; // array after data is fetched
     getPolls();
     
     function getPolls() {
       Auth.getCurrentUser().$promise.then(user => {
         // get all polls for current user
-        return polls.getPollsForUser(user._id).then(polls => $scope.polls = polls);
+        return Polls.getPollsForUser(user._id).then(polls => $scope.polls = polls);
       })
     }
     
@@ -46,7 +46,7 @@ angular.module('basejumpApp')
     }
     
     $scope.deletePoll = function (id) {
-      polls.deletePoll(id).then(getPolls);
+      Polls.deletePoll(id).then(getPolls);
     }
   }])
   
@@ -63,7 +63,7 @@ angular.module('basejumpApp')
               <span class="vote-count label label-primary">Votes: {{ getVotes(poll._id) }}</span>
               <span>{{ poll.name }}</span>
               <div class="buttons pull-right">
-                <button class="btn btn-primary"><i class="fa fa-eye"></i></button>
+                <a href="{{poll.url}}" class="btn btn-primary"><i class="fa fa-eye"></i></a>
                 <button class="btn btn-success share-button"
                   data-placement="left"
                   data-content="{{getPollUrl(poll._id)}}"
